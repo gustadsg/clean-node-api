@@ -1,7 +1,0 @@
-{
-  "*.ts": [
-    "eslint --fix --verbose 'src/**'",
-    "echo 'hello-world'",
-    "yarn test:staged"
-  ]
-}

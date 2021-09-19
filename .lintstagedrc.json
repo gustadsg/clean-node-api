@@ -1,0 +1,3 @@
+{
+  "*.ts": ["eslint --fix --verbose 'src/**'", "yarn test:staged"]
+}
