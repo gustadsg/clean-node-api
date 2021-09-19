@@ -2,10 +2,13 @@
 import { SignUpController } from "./signup";
 import { MissingParamError, InvalidParamError, ServerError } from "../errors";
 import { EmailValidator } from "../protocols";
+import { AccountModel } from "../../domain/models/account";
+import { AddAccountModel, AddAccount } from "../../domain/usecases/add-account";
 
 interface SutTypes {
   sut: SignUpController;
   emailValidatorStub: EmailValidator;
+  addAccountStub: AddAccount;
 }
 
 const makeEmailValidator = (): EmailValidator => {
@@ -18,23 +21,33 @@ const makeEmailValidator = (): EmailValidator => {
   return new EmailValidatorStub();
 };
 
-const makeEmailValidatorWithError = (): EmailValidator => {
-  class EmailValidatorStub implements EmailValidator {
-    isValid(): boolean {
-      throw new Error();
+const makeAddAccount = (): AddAccount => {
+  class AddAccountStub implements AddAccount {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    add(account: AddAccountModel): AccountModel {
+      const fakeAccount = {
+        id: "valid_id",
+        name: "valid_name",
+        email: "valid_elamil@email.com",
+        password: "valid_passwrod",
+      };
+
+      return fakeAccount;
     }
   }
 
-  return new EmailValidatorStub();
+  return new AddAccountStub();
 };
 
 const makeSut = (): SutTypes => {
   const emailValidatorStub = makeEmailValidator();
-  const sut = new SignUpController(emailValidatorStub);
+  const addAccountStub = makeAddAccount();
+  const sut = new SignUpController(emailValidatorStub, addAccountStub);
 
   return {
     sut,
     emailValidatorStub,
+    addAccountStub,
   };
 };
 
@@ -163,8 +176,13 @@ describe("SignUp Controller", () => {
   });
 
   test("should return 500 if email validator throws", () => {
-    const emailValidatorStub = makeEmailValidatorWithError();
-    const sut = new SignUpController(emailValidatorStub);
+    const { emailValidatorStub, sut } = makeSut();
+    jest
+      .spyOn(emailValidatorStub, "isValid")
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      .mockImplementation((email: string) => {
+        throw new Error();
+      });
 
     const httpRequest = {
       body: {
@@ -178,5 +196,27 @@ describe("SignUp Controller", () => {
 
     expect(httpResponse.statusCode).toBe(500);
     expect(httpResponse.body).toEqual(new ServerError());
+  });
+
+  test("should call AddAccount with correct values", () => {
+    const { sut, addAccountStub } = makeSut();
+
+    const addSpy = jest.spyOn(addAccountStub, "add");
+
+    const httpRequest = {
+      body: {
+        name: "any_name",
+        email: "any_email@email.com",
+        password: "any_password",
+        passwordConfirmation: "any_password",
+      },
+    };
+
+    sut.handle(httpRequest);
+    expect(addSpy).toHaveBeenCalledWith({
+      name: "any_name",
+      email: "any_email@email.com",
+      password: "any_password",
+    });
   });
 });
