@@ -1,7 +1,7 @@
 {
   "*.ts": [
-    "eslint --fix 'src/**'",
-    "yarn test:staged",
-    "git add"
+    "eslint --fix --verbose 'src/**'",
+    "echo 'hello-world'",
+    "yarn test:staged"
   ]
 }
