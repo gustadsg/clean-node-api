@@ -1,7 +1,3 @@
 {
-  "*.ts": [
-    "eslint --fix --verbose 'src/**'",
-    "echo 'hello-world'",
-    "yarn test:staged"
-  ]
+  "*.ts": ["eslint --fix --verbose 'src/**'", "yarn test:staged"]
 }
