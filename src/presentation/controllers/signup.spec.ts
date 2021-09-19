@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 import { SignUpController } from "./signup";
 import { MissingParamError } from "../errors/missing-param-error";
 import { InvalidParamError } from "../errors/invalid-param-error";
