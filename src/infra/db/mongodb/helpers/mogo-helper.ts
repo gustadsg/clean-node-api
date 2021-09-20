@@ -1,9 +1,10 @@
-import { MongoClient } from "mongodb";
+import { Collection, MongoClient } from "mongodb";
 
 type MongoHelpertype = {
   client: MongoClient | null;
   connect: (url: string) => Promise<void>;
   disconnect: () => Promise<void>;
+  getConnection: (name: string) => Collection | null;
 };
 
 export const MongoHelper: MongoHelpertype = {
@@ -15,5 +16,9 @@ export const MongoHelper: MongoHelpertype = {
 
   async disconnect(): Promise<void> {
     await this.client?.close();
+  },
+
+  getConnection(name: string): Collection | null {
+    return this.client?.db().collection(name) || null;
   },
 };
