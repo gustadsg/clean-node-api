@@ -1,10 +1,11 @@
-import { Collection, MongoClient } from "mongodb";
+import { Collection, MongoClient, Document } from "mongodb";
 
 type MongoHelpertype = {
   client: MongoClient | null;
   connect: (url: string) => Promise<void>;
   disconnect: () => Promise<void>;
   getConnection: (name: string) => Collection | null;
+  map: (collection: Document) => any;
 };
 
 export const MongoHelper: MongoHelpertype = {
@@ -20,5 +21,14 @@ export const MongoHelper: MongoHelpertype = {
 
   getConnection(name: string): Collection | null {
     return this.client?.db().collection(name) || null;
+  },
+
+  map(collection: Document): any {
+    const { _id, ...collectionWithOutId } = collection;
+
+    return {
+      id: _id.id.toString(),
+      ...collectionWithOutId,
+    };
   },
 };

@@ -19,12 +19,7 @@ export class AccountMongoRepository implements AddAccountRepository {
       throw new Error("unable to insert object");
     }
 
-    const account = {
-      id: insertedId.id.toString(),
-      name: insertedObj.name,
-      email: insertedObj.email,
-      password: insertedObj.password,
-    };
+    const account = MongoHelper.map(insertedObj);
 
     return account;
   }
