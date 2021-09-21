@@ -27,7 +27,7 @@ export const MongoHelper: MongoHelpertype = {
     const { _id, ...collectionWithOutId } = collection;
 
     return {
-      id: _id.id.toString(),
+      id: _id.id.toString("hex"),
       ...collectionWithOutId,
     };
   },
