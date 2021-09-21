@@ -27,6 +27,6 @@ describe("Signup Routes", () => {
         password: "senha123",
         passwordConfirmation: "senha123",
       })
-      .expect(200);
+      .expect(201);
   });
 });
