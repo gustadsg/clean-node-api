@@ -10,7 +10,7 @@
     "test:unit": "yarn test --watch -c jest-unit-config.ts",
     "test:integration": "yarn test --watch -c jest-integration-config.ts",
     "test:staged": "yarn test --findRelatedTests",
-    "test:ci": "yarn test --coverage"
+    "test:ci": "yarn test -c jest-ci-config.ts"
   },
   "devDependencies": {
     "@shelf/jest-mongodb": "^2.0.3",
