@@ -5,7 +5,7 @@ import { MongoHelper } from "../helpers/mogo-helper";
 
 export class AccountMongoRepository implements AddAccountRepository {
   async add(accountData: AddAccountModel): Promise<AccountModel> {
-    const accountColletcion = MongoHelper.getConnection("accounts");
+    const accountColletcion = await MongoHelper.getConnection("accounts");
 
     if (!accountColletcion) {
       throw new Error("account collection does not exist");
