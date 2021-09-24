@@ -1,6 +1,6 @@
 import { Controller, HttpRequest, HttpResponse } from "../../protocols";
 import { InvalidParamError, MissingParamError } from "../../errors";
-import { badRequest, ok } from "../../helpers/http-helper";
+import { badRequest, ok, serverError } from "../../helpers/http-helper";
 import { EmailValidator } from "../signup/signup-protocols";
 
 export class LoginController implements Controller {
@@ -12,27 +12,34 @@ export class LoginController implements Controller {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
-    const { email, password } = httpRequest.body;
+    try {
+      const { email, password } = httpRequest.body;
 
-    if (!email) {
-      return new Promise((resolve) =>
-        resolve(badRequest(new MissingParamError("email")))
-      );
+      if (!email) {
+        return new Promise((resolve) =>
+          resolve(badRequest(new MissingParamError("email")))
+        );
+      }
+      if (!password) {
+        return new Promise((resolve) =>
+          resolve(badRequest(new MissingParamError("password")))
+        );
+      }
+
+      const isValid = this.emailValidator.isValid(email);
+
+      if (!isValid) {
+        return new Promise((resolve) =>
+          resolve(badRequest(new InvalidParamError("email")))
+        );
+      }
+
+      return new Promise((resolve) => resolve(ok("ok")));
+    } catch (error) {
+      if (error instanceof Error) {
+        return serverError(error);
+      }
+      return serverError();
     }
-    if (!password) {
-      return new Promise((resolve) =>
-        resolve(badRequest(new MissingParamError("password")))
-      );
-    }
-
-    const isValid = this.emailValidator.isValid(email);
-
-    if (!isValid) {
-      return new Promise((resolve) =>
-        resolve(badRequest(new InvalidParamError("email")))
-      );
-    }
-
-    return new Promise((resolve) => resolve(ok("ok")));
   }
 }
