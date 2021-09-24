@@ -6,11 +6,9 @@ export class LogControllerDecorator implements Controller {
 
   private readonly logErrorRepository: LogErrorRepository | null = null;
 
-  constructor(controller: Controller, logErrorRepository?: LogErrorRepository) {
+  constructor(controller: Controller, logErrorRepository: LogErrorRepository) {
     this.controller = controller;
-    if (logErrorRepository) {
-      this.logErrorRepository = logErrorRepository;
-    }
+    this.logErrorRepository = logErrorRepository;
   }
 
   async handle(httpRequest: HttpRequest) {
