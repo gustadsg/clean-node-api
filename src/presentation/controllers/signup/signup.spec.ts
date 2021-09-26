@@ -90,7 +90,10 @@ const makeSut = (): SutTypes => {
 
 describe("SignUp Controller", () => {
   test("should return 400 if no name is provided", async () => {
-    const { sut } = makeSut();
+    const { sut, validationStub } = makeSut();
+    jest
+      .spyOn(validationStub, "validate")
+      .mockReturnValueOnce(new MissingParamError("name"));
     const httpRequest = {
       body: {
         // name: "any_name",
@@ -105,7 +108,10 @@ describe("SignUp Controller", () => {
   });
 
   test("should return 400 if no email is provided", async () => {
-    const { sut } = makeSut();
+    const { sut, validationStub } = makeSut();
+    jest
+      .spyOn(validationStub, "validate")
+      .mockReturnValueOnce(new MissingParamError("email"));
     const httpRequest = {
       body: {
         name: "any_name",
@@ -120,7 +126,10 @@ describe("SignUp Controller", () => {
   });
 
   test("should return 400 if no password is provided", async () => {
-    const { sut } = makeSut();
+    const { sut, validationStub } = makeSut();
+    jest
+      .spyOn(validationStub, "validate")
+      .mockReturnValueOnce(new MissingParamError("password"));
     const httpRequest = {
       body: {
         name: "any_name",
@@ -135,7 +144,10 @@ describe("SignUp Controller", () => {
   });
 
   test("should return 400 if no password confirmation is provided", async () => {
-    const { sut } = makeSut();
+    const { sut, validationStub } = makeSut();
+    jest
+      .spyOn(validationStub, "validate")
+      .mockReturnValueOnce(new MissingParamError("passwordConfirmation"));
     const httpRequest = {
       body: {
         name: "any_name",
