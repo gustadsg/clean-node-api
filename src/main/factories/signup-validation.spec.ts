@@ -1,4 +1,5 @@
 import { RequiredFieldValidation } from "../../presentation/helpers/validators/required-field-validation";
+import { CompareFieldsValidation } from "../../presentation/helpers/validators/compare-fields-validation";
 import { Validation } from "../../presentation/helpers/validators/validation";
 import { ValidationComposite } from "../../presentation/helpers/validators/validation-composite";
 import { makeSignupValidation } from "./signup-validation";
@@ -14,10 +15,20 @@ describe("SignupValidation factory", () => {
       "password",
       "passwordConfirmation",
     ];
+
+    const equalFields = [
+      { fieldName: "password", fieldToCompareName: "passwordConfirmation" },
+    ];
     const validations: Validation[] = [];
 
     for (const field of requiredFields) {
       validations.push(new RequiredFieldValidation(field));
+    }
+
+    for (const { fieldName, fieldToCompareName } of equalFields) {
+      validations.push(
+        new CompareFieldsValidation(fieldName, fieldToCompareName)
+      );
     }
 
     expect(ValidationComposite).toHaveBeenCalledWith(validations);

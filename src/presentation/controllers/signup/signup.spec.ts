@@ -164,7 +164,10 @@ describe("SignUp Controller", () => {
   });
 
   test("should return 400 if password confirmation fails", async () => {
-    const { sut } = makeSut();
+    const { sut, validationStub } = makeSut();
+    jest
+      .spyOn(validationStub, "validate")
+      .mockReturnValueOnce(new InvalidParamError("passwordConfirmation"));
     const httpRequest = {
       body: {
         name: "any_name",
