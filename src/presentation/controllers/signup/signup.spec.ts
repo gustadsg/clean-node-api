@@ -69,6 +69,7 @@ const makeValidation = (): Validation => {
   }
   return new ValidationStub();
 };
+
 const makeSut = (): SutTypes => {
   const validationStub = makeValidation();
   const emailValidatorStub = makeEmailValidator();
@@ -133,7 +134,7 @@ describe("SignUp Controller", () => {
     expect(httpResponse).toEqual(badRequest(new MissingParamError("password")));
   });
 
-  test("should return 400 if no password consfirmation is provided", async () => {
+  test("should return 400 if no password confirmation is provided", async () => {
     const { sut } = makeSut();
     const httpRequest = {
       body: {
