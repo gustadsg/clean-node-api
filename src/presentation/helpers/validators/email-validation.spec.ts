@@ -1,5 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import faker from "faker";
+import { InvalidParamError } from "../../errors";
 import { EmailValidator } from "../../protocols/email-validator";
 import { EmailValidation } from "./email-validation";
 
@@ -38,5 +39,16 @@ describe("EmailValidation", () => {
     sut.validate({ email });
 
     expect(isValidSpy).toHaveBeenCalledWith(email);
+  });
+
+  test("should return an error if an invalid email is provided", () => {
+    const { sut, emailValidatorStub } = makeSut();
+
+    jest.spyOn(emailValidatorStub, "isValid").mockReturnValueOnce(false);
+    const email = faker.internet.email();
+
+    const error = sut.validate({ email });
+
+    expect(error).toEqual(new InvalidParamError("email"));
   });
 });
