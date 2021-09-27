@@ -61,4 +61,11 @@ describe("EmailValidation", () => {
 
     expect(sut.validate).toThrow();
   });
+
+  test("should return null if an invalid email is provided", () => {
+    const { sut } = makeSut();
+    const email = faker.internet.email();
+    const error = sut.validate(email);
+    expect(error).toBeNull();
+  });
 });
