@@ -3,6 +3,8 @@ import { CompareFieldsValidation } from "../../presentation/helpers/validators/c
 import { Validation } from "../../presentation/helpers/validators/validation";
 import { ValidationComposite } from "../../presentation/helpers/validators/validation-composite";
 import { makeSignupValidation } from "./signup-validation";
+import { EmailValidation } from "../../presentation/helpers/validators/email-validator";
+import { EmailValidatorAdapter } from "../../utils/email-validator-adapter";
 
 jest.mock("../../presentation/helpers/validators/validation-composite");
 
@@ -30,6 +32,8 @@ describe("SignupValidation factory", () => {
         new CompareFieldsValidation(fieldName, fieldToCompareName)
       );
     }
+
+    validations.push(new EmailValidation(new EmailValidatorAdapter()));
 
     expect(ValidationComposite).toHaveBeenCalledWith(validations);
   });
