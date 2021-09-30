@@ -12,7 +12,11 @@ import {
   HttpRequest,
   Validation,
 } from "./signup-protocols";
-import { created, serverError, badRequest } from "../../helpers/http-helper";
+import {
+  created,
+  serverError,
+  badRequest,
+} from "../../helpers/http/http-helper";
 
 interface SutTypes {
   sut: SignUpController;
