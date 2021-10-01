@@ -1,13 +1,15 @@
 /* eslint-disable max-classes-per-file */
 // eslint-disable-next-line import/no-extraneous-dependencies
 import faker from "faker";
-import { AccountModel } from "../add-account/db-add-account-protocols";
-import { LoadAccountByEmailRepository } from "../../protocols/db/load-account-by-email-repository";
 import { DbAuthentication } from "./db-authentication";
-import { AuthenticationModel } from "../../../domain/usecases/authentication";
-import { HashComparer } from "../../protocols/cryptography/hash-comparer";
-import { TokenGenerator } from "../../protocols/cryptography/token-generator";
-import { UpdateAccessTokenRepository } from "../../protocols/db/update-access-token-repository";
+import {
+  AccountModel,
+  LoadAccountByEmailRepository,
+  AuthenticationModel,
+  HashComparer,
+  TokenGenerator,
+  UpdateAccessTokenRepository,
+} from "./db-authentication-protocols";
 
 interface SutTypes {
   sut: DbAuthentication;
