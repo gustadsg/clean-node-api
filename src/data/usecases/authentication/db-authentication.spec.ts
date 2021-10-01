@@ -6,11 +6,13 @@ import { LoadAccountByEmailRepository } from "../../protocols/db/load-account-by
 import { DbAuthentication } from "./db-authentication";
 import { AuthenticationModel } from "../../../domain/usecases/authentication";
 import { HashComparer } from "../../protocols/cryptography/hash-comparer";
+import { TokenGenerator } from "../../protocols/cryptography/token-generator";
 
 interface SutTypes {
   sut: DbAuthentication;
   loadAccountByEmailRepositoryStub: LoadAccountByEmailRepository;
   hashComparerStub: HashComparer;
+  tokenGeneratorStub: TokenGenerator;
 }
 
 const makeFakeAccount = (): AccountModel => ({
@@ -49,17 +51,30 @@ const makeHashComparer = (): HashComparer => {
   return new HashComparerStub();
 };
 
+const makeTokenGenerator = (): TokenGenerator => {
+  class TokenGeneratorStub implements TokenGenerator {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    async generate(id: string): Promise<string> {
+      return new Promise((resolve) => resolve(faker.datatype.string(64)));
+    }
+  }
+  return new TokenGeneratorStub();
+};
+
 const makeSut = (): SutTypes => {
   const loadAccountByEmailRepositoryStub = makeLoadAccountByEmailRepository();
   const hashComparerStub = makeHashComparer();
+  const tokenGeneratorStub = makeTokenGenerator();
   const sut = new DbAuthentication(
     loadAccountByEmailRepositoryStub,
-    hashComparerStub
+    hashComparerStub,
+    tokenGeneratorStub
   );
 
   return {
     loadAccountByEmailRepositoryStub,
     hashComparerStub,
+    tokenGeneratorStub,
     sut,
   };
 };
@@ -124,5 +139,12 @@ describe("DbAuthentication Usecase", () => {
       .mockReturnValueOnce(new Promise((resolve) => resolve(false)));
     const accessToken = await sut.auth(makeFakeAuthentication());
     expect(accessToken).toBeNull();
+  });
+
+  test("should call TokenGenerator with correct id", async () => {
+    const { sut, tokenGeneratorStub } = makeSut();
+    const generateSpy = jest.spyOn(tokenGeneratorStub, "generate");
+    await sut.auth(makeFakeAuthentication());
+    expect(generateSpy).toHaveBeenCalledWith(loadedAccount.id);
   });
 });
