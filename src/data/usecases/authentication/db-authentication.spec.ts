@@ -51,11 +51,12 @@ const makeHashComparer = (): HashComparer => {
   return new HashComparerStub();
 };
 
+const generatedToken = faker.datatype.string(64);
 const makeTokenGenerator = (): TokenGenerator => {
   class TokenGeneratorStub implements TokenGenerator {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async generate(id: string): Promise<string> {
-      return new Promise((resolve) => resolve(faker.datatype.string(64)));
+      return new Promise((resolve) => resolve(generatedToken));
     }
   }
   return new TokenGeneratorStub();
@@ -157,5 +158,12 @@ describe("DbAuthentication Usecase", () => {
       );
     const promise = sut.auth(makeFakeAuthentication());
     expect(promise).rejects.toThrow();
+  });
+
+  test("should return an access token on success", async () => {
+    const { sut } = makeSut();
+
+    const accessToken = await sut.auth(makeFakeAuthentication());
+    expect(accessToken).toBe(generatedToken);
   });
 });
