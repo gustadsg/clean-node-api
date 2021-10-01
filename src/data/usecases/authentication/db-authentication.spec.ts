@@ -7,12 +7,14 @@ import { DbAuthentication } from "./db-authentication";
 import { AuthenticationModel } from "../../../domain/usecases/authentication";
 import { HashComparer } from "../../protocols/cryptography/hash-comparer";
 import { TokenGenerator } from "../../protocols/cryptography/token-generator";
+import { UpdateAccessTokenRepository } from "../../protocols/db/update-access-token-repository";
 
 interface SutTypes {
   sut: DbAuthentication;
   loadAccountByEmailRepositoryStub: LoadAccountByEmailRepository;
   hashComparerStub: HashComparer;
   tokenGeneratorStub: TokenGenerator;
+  updateAccessTokenRepositoryStub: UpdateAccessTokenRepository;
 }
 
 const makeFakeAccount = (): AccountModel => ({
@@ -62,20 +64,33 @@ const makeTokenGenerator = (): TokenGenerator => {
   return new TokenGeneratorStub();
 };
 
+const makeUpdateAccessTokenRepository = (): UpdateAccessTokenRepository => {
+  class UpdateAccessTokenRepositoryStub implements UpdateAccessTokenRepository {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    async update(id: string, token: string): Promise<void> {
+      return new Promise((resolve) => resolve());
+    }
+  }
+  return new UpdateAccessTokenRepositoryStub();
+};
+
 const makeSut = (): SutTypes => {
   const loadAccountByEmailRepositoryStub = makeLoadAccountByEmailRepository();
   const hashComparerStub = makeHashComparer();
   const tokenGeneratorStub = makeTokenGenerator();
+  const updateAccessTokenRepositoryStub = makeUpdateAccessTokenRepository();
   const sut = new DbAuthentication(
     loadAccountByEmailRepositoryStub,
     hashComparerStub,
-    tokenGeneratorStub
+    tokenGeneratorStub,
+    updateAccessTokenRepositoryStub
   );
 
   return {
     loadAccountByEmailRepositoryStub,
     hashComparerStub,
     tokenGeneratorStub,
+    updateAccessTokenRepositoryStub,
     sut,
   };
 };
@@ -165,5 +180,13 @@ describe("DbAuthentication Usecase", () => {
 
     const accessToken = await sut.auth(makeFakeAuthentication());
     expect(accessToken).toBe(generatedToken);
+  });
+
+  test("should call UpdateAccessTokenRepository with correct values", async () => {
+    const { sut, updateAccessTokenRepositoryStub } = makeSut();
+    const updateSpy = jest.spyOn(updateAccessTokenRepositoryStub, "update");
+    const payload = makeFakeAuthentication();
+    await sut.auth(payload);
+    expect(updateSpy).toHaveBeenCalledWith(loadedAccount.id, generatedToken);
   });
 });
