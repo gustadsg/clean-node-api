@@ -23,4 +23,21 @@ export class AccountMongoRepository implements AddAccountRepository {
 
     return account;
   }
+
+  async loadByEmail(email: string): Promise<AccountModel | null> {
+    const accountColletcion = await MongoHelper.getConnection("accounts");
+
+    if (!accountColletcion) {
+      throw new Error("account collection does not exist");
+    }
+
+    const foundObj = await accountColletcion.findOne<AccountModel>({ email });
+
+    if (!foundObj) {
+      return null;
+    }
+    const account = MongoHelper.map(foundObj);
+
+    return account;
+  }
 }
