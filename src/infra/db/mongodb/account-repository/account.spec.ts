@@ -1,6 +1,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import faker from "faker";
 import { Collection, Document } from "mongodb";
+import { AccountModel } from "../../../../domain/models/account";
 import { MongoHelper } from "../helpers/mogo-helper";
 import { AccountMongoRepository } from "./account";
 
@@ -9,6 +10,8 @@ const accountData = {
   email: faker.internet.email(),
   password: faker.internet.password(),
 };
+
+const randomToken = faker.random.alphaNumeric(64);
 
 let accountCollection: Collection<Document> | null;
 
@@ -61,5 +64,28 @@ describe("Account Mongo Repository", () => {
     const account = await sut.loadByEmail(accountData.email);
 
     expect(account).toBeFalsy();
+  });
+
+  test("should update the account accesTken on updateAccessToken success", async () => {
+    const sut = makeSut();
+
+    let account: Document | null = null;
+
+    const result = await accountCollection?.insertOne(accountData);
+    const insertedId = result?.insertedId;
+
+    if (insertedId) {
+      await sut.updateAccessToken(insertedId, randomToken);
+      const foundObj = await accountCollection?.findOne<AccountModel>({
+        _id: insertedId,
+      });
+
+      if (!(foundObj === undefined)) {
+        account = foundObj;
+      }
+    }
+
+    expect(account).toBeTruthy();
+    expect(account?.accessToken).toBe(randomToken);
   });
 });
