@@ -75,7 +75,7 @@ describe("Account Mongo Repository", () => {
     const insertedId = result?.insertedId;
 
     if (insertedId) {
-      await sut.updateAccessToken(insertedId, randomToken);
+      await sut.updateAccessToken(insertedId.id.toString("hex"), randomToken);
       const foundObj = await accountCollection?.findOne<AccountModel>({
         _id: insertedId,
       });

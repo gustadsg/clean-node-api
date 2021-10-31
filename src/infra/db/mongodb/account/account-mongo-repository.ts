@@ -49,15 +49,17 @@ export class AccountMongoRepository
     return account;
   }
 
-  async updateAccessToken(id: string | ObjectId, token: string): Promise<void> {
+  async updateAccessToken(id: string, token: string): Promise<void> {
     const accountColletcion = await MongoHelper.getConnection("accounts");
 
     if (!accountColletcion) {
       throw new Error("account collection does not exist");
     }
 
+    const objId = new ObjectId(id);
+
     await accountColletcion.updateOne(
-      { _id: id },
+      { _id: objId },
       { $set: { accessToken: token } }
     );
   }
