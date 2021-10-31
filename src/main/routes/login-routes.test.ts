@@ -57,5 +57,18 @@ describe("Login Routes", () => {
         .send({ email: userInfo.email, password: userInfo.password })
         .expect(200);
     });
+
+    test("should return 401 on invalid login credentials", async () => {
+      const userInfo = {
+        name: faker.name.findName(),
+        email: faker.internet.email(),
+        password: faker.internet.password(),
+      };
+
+      await request(app)
+        .post("/api/login")
+        .send({ email: userInfo.email, password: userInfo.password })
+        .expect(401);
+    });
   });
 });
