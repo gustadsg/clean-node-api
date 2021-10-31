@@ -1,5 +1,5 @@
 /* eslint-disable max-classes-per-file */
-import { SignUpController } from "./signup";
+import { SignUpController } from "./signup-controller";
 import {
   MissingParamError,
   InvalidParamError,
@@ -11,7 +11,7 @@ import {
   AccountModel,
   HttpRequest,
   Validation,
-} from "./signup-protocols";
+} from "./signup-controller-protocols";
 import {
   created,
   serverError,

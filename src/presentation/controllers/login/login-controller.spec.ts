@@ -1,5 +1,5 @@
 /* eslint-disable max-classes-per-file */
-import { LoginController } from "./login";
+import { LoginController } from "./login-controller";
 import {
   badRequest,
   serverError,
@@ -12,7 +12,7 @@ import {
   Authentication,
   Validation,
   AuthenticationModel,
-} from "./login-protocols";
+} from "./login-controller-protocols";
 
 interface SutTypes {
   sut: LoginController;

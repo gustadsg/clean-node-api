@@ -3,7 +3,7 @@ import faker from "faker";
 import { Collection, Document } from "mongodb";
 import { AccountModel } from "../../../../domain/models/account";
 import { MongoHelper } from "../helpers/mogo-helper";
-import { AccountMongoRepository } from "./account";
+import { AccountMongoRepository } from "./account-mongo-repository";
 
 const accountData = {
   name: faker.name.findName(),
