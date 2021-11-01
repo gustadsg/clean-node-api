@@ -29,6 +29,7 @@
     "global-require": "off",
     "import/no-dynamic-require": "off",
     "no-useless-constructor": "off",
-    "no-empty-function": "off"
+    "no-empty-function": "off",
+    "no-use-before-define": "warn"
   }
 }
